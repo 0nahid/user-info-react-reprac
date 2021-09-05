@@ -1,25 +1,31 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
 import './App.css';
+import User from './User';
 
 function App() {
+  const [users, setUsers] = useState([]);
+  const [team, setTeam] = useState([]);
+  useEffect(() => {
+    fetch('https://randomuser.me/api/?results=10')
+      .then(response => response.json())
+      .then(data => setUsers(data.results))
+  }, []);
+  const addToTeam = (user) => {
+    setTeam([...team, user]);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <h1 className="text-primary">Team Builder</h1>
+      {team.map((team, idx) =>
+        <Row Row className="shadow m-2 p-2 rounded" >
+          <Col md={4} >
+            <p key={idx}>{team}</p>
+          </Col>
+        </Row>
+      )}
+      {users.map(user => <User user={user} key={user.phone} addToTeam={addToTeam}></User>)}
+    </Container >
   );
 }
-
 export default App;
